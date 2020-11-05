@@ -6,10 +6,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Pension_Management_Portal.Models;
+using Pension_Management_Portal.Repository;
 
 namespace Pension_Management_Portal
 {
@@ -26,6 +29,12 @@ namespace Pension_Management_Portal
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddTransient<IPensionPortalRepo, PensionPortalRepo>();
+
+            services.AddDbContextPool<PensionContext>(
+
+            options => options.UseSqlServer(Configuration.GetConnectionString("CustomerDBConnection")));
 
             services.Configure<CookiePolicyOptions>(options =>
             {
