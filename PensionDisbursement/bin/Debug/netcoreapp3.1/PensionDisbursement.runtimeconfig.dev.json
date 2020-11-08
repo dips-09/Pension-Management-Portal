@@ -1,0 +1,8 @@
+{
+  "runtimeOptions": {
+    "additionalProbingPaths": [
+      "C:\\Users\\DIPIKA\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\DIPIKA\\.nuget\\packages"
+    ]
+  }
+}
