@@ -829,3 +829,4 @@ E:\Cognizant Post Joining\MFRP\Pension-Management-Portal\bin\Debug\netcoreapp3.1
 E:\Cognizant Post Joining\MFRP\Pension-Management-Portal\obj\Debug\netcoreapp3.1\Pension-Management-Portal.csproj.CoreCompileInputs.cache
 E:\Cognizant Post Joining\MFRP\Pension-Management-Portal\obj\Debug\netcoreapp3.1\Pension-Management-Portal.MvcApplicationPartsAssemblyInfo.cs
 E:\Cognizant Post Joining\MFRP\Pension-Management-Portal\obj\Debug\netcoreapp3.1\Pension-Management-Portal.MvcApplicationPartsAssemblyInfo.cache
+E:\Cognizant Post Joining\MFRP\Pension-Management-Portal\obj\Debug\netcoreapp3.1\Razor\Views\Pension\PensionervaluesDisplayed.cshtml.g.cs

@@ -21,6 +21,7 @@ namespace AuthorizationAPI.Controllers
         private IConfiguration _config;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(AuthController));
         private readonly IPensionRepo repo;
+        
 
         public AuthController(IConfiguration config,IPensionRepo _repo)
         {
@@ -37,65 +38,27 @@ namespace AuthorizationAPI.Controllers
         [HttpPost]
         public IActionResult Login([FromBody] PensionCredentials login)
         {
+            AuthRepo auth_repo = new AuthRepo(_config,repo);
             _log4net.Info("Login initiated!");
             IActionResult response = Unauthorized();
             //login.FullName = "user1";
-            var user = AuthenticateUser(login);
+            var user = auth_repo.AuthenticateUser(login);
             if (user == null)
             {
                 return NotFound();
             }
             else
             {
-                var tokenString = GenerateJSONWebToken(user);
+                var tokenString = auth_repo.GenerateJSONWebToken(user);
                 response = Ok(new { token = tokenString });
             }
 
             return response;
         }
 
-        /// <summary>
-        /// Generating the token
-        /// </summary>
-        /// <param name="userInfo"></param>
-        /// <returns></returns>
-        [NonAction]
-        public string GenerateJSONWebToken(PensionCredentials userInfo)
-        {
-            _log4net.Info("Token Is Generated!");
-
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-
-            var token = new JwtSecurityToken(
-              issuer: _config["Jwt:Issuer"],
-              audience: _config["Jwt:Issuer"],
-              null,
-              expires: DateTime.Now.AddMinutes(30),
-              signingCredentials: credentials);
-
-
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-
-
-        }
-        /// <summary>
-        /// Finding User with matching credentials
-        /// </summary>
-        /// <param name="login"></param>
-        /// <returns></returns>
-        [NonAction]
-        public PensionCredentials AuthenticateUser(PensionCredentials login)
-        {
-            _log4net.Info("Validating the User!");
-
-            //Validate the User Credentials 
-            PensionCredentials usr = repo.GetPensionerCred(login);
-
-
-            return usr;
-        }
+        
+  
+        
+        
     }
 }

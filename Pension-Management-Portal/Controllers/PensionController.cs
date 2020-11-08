@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -22,6 +23,7 @@ namespace Pension_Management_Portal.Controllers
         private IConfiguration configuration;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(PensionController));
         PensionDetail penDetailObj = new PensionDetail();
+        PensionDetail ResDetails = new PensionDetail();
         private readonly IPensionPortalRepo repo;
         public PensionController(ILogger<PensionController> logger,IConfiguration _configuration, IPensionPortalRepo _repo)
         {
@@ -120,27 +122,38 @@ namespace Pension_Management_Portal.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> PensionPortal(PensionerInput input)
         {
+            if (HttpContext.Session.GetString("token") == null)
+            {
+                _log4net.Info("Pensioner is not logged in");
+                ViewBag.Message = "Please Login First";
+                return View("Login");
+            }
+
             _log4net.Info("Processing the pension began");
+
+            
             string processValue = configuration.GetValue<string>("MyLinkValue:processUri");
 
             if (ModelState.IsValid)
             {
                 using (var client = new HttpClient())
                 {
-                    StringContent content = new StringContent(JsonConvert.SerializeObject(input));
-
-                    client.BaseAddress = new Uri(processValue);
-                    client.DefaultRequestHeaders.Clear();
-                    client.DefaultRequestHeaders.Add("Authorization", "Bearer" + token);
-                    client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                    
+                    StringContent content = new StringContent(JsonConvert.SerializeObject(input), Encoding.UTF8, "application/json");
+                    client.BaseAddress = new Uri(processValue);                   
 
                     try
                     {
-                        using (var response = await client.PostAsync("api/ProcessPension/ProcessPension", content))
+                        using (var response = await client.PostAsync("api/ProcessPension/ProcessPension/", content))
                         {
-                            string apiResponse = await response.Content.ReadAsStringAsync();
-                            PensionDetail res = JsonConvert.DeserializeObject<PensionDetail>(apiResponse);
-                            penDetailObj = res;
+                            var apiResponse = await response.Content.ReadAsStringAsync();
+                            ProcessResponse res = JsonConvert.DeserializeObject<ProcessResponse>(apiResponse);
+                            penDetailObj.Status = res.Result.Status;
+                            penDetailObj.PensionAmount = res.Result.PensionAmount;
+
+                            ResDetails.PensionAmount = penDetailObj.PensionAmount;
+                            ResDetails.Status = penDetailObj.Status;
+      
                         }
                     }
                     catch (Exception e)
@@ -156,7 +169,7 @@ namespace Pension_Management_Portal.Controllers
                     ViewBag.erroroccured = "Some Error Occured";
                     return View();
                 }
-                if (penDetailObj.Status.Equals(20))
+                if (penDetailObj.Status.Equals(21))
                 {
                     _log4net.Error("Some Microservice is Down!!");
                     ViewBag.erroroccured = "Some Error Occured";
@@ -166,9 +179,9 @@ namespace Pension_Management_Portal.Controllers
                 {
                     // Storing the Values in Database
                     _log4net.Info("Pensioner details have been matched with the Csv and data is successfully saved in local Database!!");
-                    repo.AddResponse(penDetailObj);
+                    repo.AddResponse(ResDetails);
                     repo.Save();
-                    return RedirectToAction("PensionervaluesDisplayed", penDetailObj);
+                    return RedirectToAction("PensionervaluesDisplayed", ResDetails);
                 }
                 else
                 {
@@ -182,9 +195,15 @@ namespace Pension_Management_Portal.Controllers
             return View();            
         }
 
-        
-        
+        public ActionResult PensionervaluesDisplayed(PensionDetail detail)
+        {
+            return View(detail);
+        }
 
-       
+
+
+
+
+
     }
 }

@@ -8,14 +8,13 @@ namespace Pension_Management_Portal.Models
     public class PensionerDetail
     {
         public string Name { get; set; }
+        public double PensionAmount { get; set; }
+        public string Pan { get; set; }
+        public string AadharNumber { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public string PAN { get; set; }
-        public double SalaryEarned { get; set; }
-        public double Allowances { get; set; }
         public PensionTypeValue PensionType { get; set; }
-        public string BankName { get; set; }
-        public string AccountNumber { get; set; }
-        public BankType BankType { get; set; }
+        public int BankType { get; set; }
+        public int Status { get; set; }
     }
 
    

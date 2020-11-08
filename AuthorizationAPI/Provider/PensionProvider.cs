@@ -13,11 +13,15 @@ namespace AuthorizationAPI.Provider
             new PensionCredentials{ Username = "user1", Password = "user1"},
             new PensionCredentials{ Username = "user2", Password = "user2"}
         };
-        public List<PensionCredentials> list { get => List; }
+        public List<PensionCredentials> GetList()
+        {
+            return List;
+        }
 
         public PensionCredentials GetPensioner(PensionCredentials cred)
         {
-            PensionCredentials penCred = List.FirstOrDefault(user => user.Username == cred.Username && user.Password == cred.Password);
+            List<PensionCredentials> rList = GetList();
+            PensionCredentials penCred = rList.FirstOrDefault(user => user.Username == cred.Username && user.Password == cred.Password);
 
             return penCred;
         }

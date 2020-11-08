@@ -11,4 +11,17 @@ namespace Pension_Management_Portal.Models
         public double PensionAmount { get; set; }
         public int BankCharge { get; set; }
     }
+
+    public class ProcessPensionResponse
+    {
+        
+        public int Status { get; set; }
+        public double PensionAmount { get; set; }
+    }
+
+    public class ProcessResponse
+    {
+        public string Message { get; set; }
+        public ProcessPensionResponse Result { get; set; }
+    }
 }

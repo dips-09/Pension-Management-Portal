@@ -8,7 +8,7 @@ namespace AuthorizationAPI.Provider
 {
     public interface IPensionProvider
     {
-        public List<PensionCredentials> list { get;}
+        public List<PensionCredentials> GetList();
 
         public PensionCredentials GetPensioner(PensionCredentials cred);
     }

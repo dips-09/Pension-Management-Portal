@@ -1,8 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Pension_Management_Portal.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Pension_Management_Portal.Repository
@@ -24,5 +29,9 @@ namespace Pension_Management_Portal.Repository
         {
             context.SaveChanges();
         }
+
+
+        
+
     }
 }
