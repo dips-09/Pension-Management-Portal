@@ -59,7 +59,7 @@ namespace Pension_Management_Portal.Controllers
             {
                 StringContent content = new StringContent(JsonConvert.SerializeObject(cred), Encoding.UTF8, "application/json");
 
-                using (var response = await httpClient.PostAsync("https://localhost:44365/api/Auth/", content))
+                using (var response = await httpClient.PostAsync("http://52.226.102.92/api/Auth/", content))
                 {
 
                     if (!response.IsSuccessStatusCode)
